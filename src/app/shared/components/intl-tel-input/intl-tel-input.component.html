@@ -1,0 +1,17 @@
+<div class="card p-4 bg-gray-200 border 
+border-gray-200 rounded m-4">
+  <p>intl-tel-input works!</p>
+  <!-- <input #phone type="tel" name="phone" ngModel class="text-sm text-gray-base 
+  mr-3 py-5 px-4 h-2 border 
+  border-gray-200 rounded mb-2" id="phone"> -->
+
+  <form [formGroup]="phoneForm">
+    <label for="phone">Phone Number:</label>
+    <form [formGroup]="phoneForm">
+      <input
+        class="text-sm text-gray-base mr-3 py-5 px-4 h-2 border border-gray-200 rounded mb-2" 
+        formControlName="phone" type="tel" />
+    </form>
+    <!-- <button type="submit">Submit</button> -->
+  </form>
+</div>

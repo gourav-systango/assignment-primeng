@@ -1,0 +1,58 @@
+<div class="card flex justify-center items-center h-screen">
+   <div class="card p-4 bg-gray-50 border border-gray-200 rounded m-4 w-8/12 h-100 shadow-lg shadow-gray-500/50 dark:shadow-lg dark:shadow-gray-800/80">
+      <h2 class="text-md font-bold  mb-4">Signup</h2>
+      <div class="flex flex-col w-full sm:w-auto">
+         <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-3">
+            <div class="flex-1">
+               <label for="firstname" class="block text-xs font-semibold mb-2">Firstname</label>
+               <input type="text" pInputText id="firstname" class="w-full" />
+            </div>
+            <div class="flex-1">
+               <label for="lastname" class="block text-xs font-semibold mb-2">Lastname</label>
+               <input type="text" pInputText id="lastname" class="w-full" />
+            </div>
+         </div>
+         <div class="flex flex-col sm:flex-row sm:items-center gap-6  mb-3">
+            <div class="flex-1">
+               <label for="email" class="block text-xs font-semibold mb-2">Email</label>
+               <input type="email" pInputText id="email" class="w-full" />
+            </div>
+            <div class="flex-1">
+               <label for="Contact" class="block text-xs font-semibold mb-2">Contact</label>
+               <input type="tel" [formControl]="phone" pInputText ngxPhoneField [ngxPhoneFieldParams]="params"
+                  id="Contact" class="w-full" />
+            </div>
+         </div>
+         <div class="flex flex-col sm:flex-row sm:items-center gap-6  mb-3">
+            <div class="flex-1">
+               <label for="date" class="block text-xs font-semibold mb-2">Date</label>
+               <p-datepicker inputId="date" class="w-full grid" />
+            </div>
+            <div class="flex-1">
+               <label for="country" class="block text-xs font-semibold mb-2">Country</label>
+               <p-select [options]="countries" optionLabel="name" placeholder="Select a Country" class="w-full"
+                  [formControl]="selectedCountry">
+                  <ng-template #selectedItem>
+                     <div class="flex items-center gap-2" *ngIf="selectedCountry.value">
+                        <div>{{ selectedCountry.value['name'] }}</div>
+                     </div>
+                  </ng-template>
+                  <ng-template let-country #item>
+                     <div class="flex items-center gap-2">
+                        <div>{{ country.name }}</div>
+                     </div>
+                  </ng-template>
+               </p-select>
+            </div>
+         </div>
+         <div class="flex-auto mb-3">
+            <label for="message" class="block text-xs font-semibold mb-2">Message</label>
+            <textarea pTextarea id="message" class="w-full focus:outline-none focus:border-primary-300 focus:border-1 focus:ring-1 focus:ring-primary-100
+            text-sm text-gray-base mr-3 py-5 px-4 border border-gray-300 rounded" rows="4"></textarea>
+         </div>
+         <div class="flex-auto">
+            <p-button label="Submit" [disabled]="true" class="text-xs font-medium text-center" />
+         </div>
+      </div>
+   </div>
+</div>

@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+@layer tailwind-base, primeng, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+.iti {
+  width: 100%;
+  .iti__country-container {
+    .iti__search-input {
+      border-color: --var(--primary-color);
+      padding: .2rem .3rem;
+      &:focus {
+          outline: rgb(236, 236, 236) auto .1rem;   
+      }
+    }
+  }
+}

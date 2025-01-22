@@ -1,0 +1,10 @@
+<div class="card p-4 bg-gray-200 border border-gray-200 rounded m-4">
+  <form [formGroup]="phoneForm">
+    <input type="tel"
+      class="
+      focus:outline-none focus:border-sky-100 focus:ring-1 focus:ring-sky-300
+      text-sm text-gray-base mr-3 py-5 px-4 h-2 border border-gray-200 rounded mb-2"   
+      formControlName="phone" ngxPhoneField [ngxPhoneFieldParams]="params" 
+    />
+  </form>
+</div>
