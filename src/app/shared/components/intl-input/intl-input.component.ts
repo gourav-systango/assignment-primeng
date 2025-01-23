@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Iti } from 'intl-tel-input';
 import { NgxPhoneField } from 'ngx-phone-field';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-intl-input',
-  imports: [ReactiveFormsModule, NgxPhoneField],
+  imports: [ReactiveFormsModule, InputTextModule, NgxPhoneField],
   templateUrl: './intl-input.component.html',
   styleUrl: './intl-input.component.sass'
 })
