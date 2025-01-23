@@ -22,20 +22,3 @@
     }
   }
 }
-
-.autocomplete-country-search {
-  p-autocomplete {
-    &.select-country {
-      .p-inputtext {
-        width: 10rem;
-      }
-      .p-autocomplete-dropdown {
-        background: white;
-        border: 0;
-      }
-    }
-    .p-inputtext {
-      border: none;
-    }
-  }
-}

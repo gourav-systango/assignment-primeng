@@ -4,11 +4,11 @@
       <div class="flex flex-col w-full sm:w-auto">
          <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-3">
             <div class="flex-1">
-               <label for="firstname" class="block text-xs font-semibold mb-2">Firstname</label>
+               <label for="firstname" class="block text-xs font-semibold mb-2">First Name</label>
                <input type="text" pInputText id="firstname" class="w-full" />
             </div>
             <div class="flex-1">
-               <label for="lastname" class="block text-xs font-semibold mb-2">Lastname</label>
+               <label for="lastname" class="block text-xs font-semibold mb-2">Last Name</label>
                <input type="text" pInputText id="lastname" class="w-full" />
             </div>
          </div>
@@ -21,6 +21,9 @@
                <label for="Contact" class="block text-xs font-semibold mb-2">Contact</label>
                <input type="tel" [formControl]="phone" pInputText ngxPhoneField [ngxPhoneFieldParams]="params"
                   id="Contact" class="w-full" />
+              <!--  @if(phone.invalid) {
+                  <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please select a country</p>
+               } -->
             </div>
          </div>
          <div class="flex flex-col sm:flex-row sm:items-center gap-6  mb-3">
@@ -30,7 +33,7 @@
             </div>
             <div class="flex-1">
                <label for="country" class="block text-xs font-semibold mb-2">Country</label>
-               <p-select [options]="countries" optionLabel="name" placeholder="Select a Country" class="w-full"
+               <p-select [options]="countries" optionLabel="name" class="w-full"
                   [formControl]="selectedCountry">
                   <ng-template #selectedItem>
                      <div class="flex items-center gap-2" *ngIf="selectedCountry.value">
@@ -51,49 +54,35 @@
                      </div>
                   </ng-template>
                </p-select>
+               @if(selectedCountry.touched && selectedCountry.invalid) {
+                  <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please select a country</p>
+               }
+
             </div>
          </div>
 
-         <div class="flex flex-col sm:flex-row sm:items-center gap-6  mb-3">
+         <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-3">
             <div class="flex-1">
-               <label for="country" class="block text-xs font-semibold mb-2">Country</label>
-               <div class="autocomplete-country-search bg-gray-0 border border-gray-200 rounded w-fit">
-                  <p-autocomplete
-                     class="select-country"
-                     [placeholder]="'Select a Country'"
-                     [formControl]="selectedCountry"
-                     [suggestions]="filteredCountries"
-                     (completeMethod)="filterCountry($event)"
-                     optionLabel="name"
-                     [dropdown]="true"
-                  >
-                     <!-- <ng-template let-country #selectedItem>
-                        <div class="flex items-center gap-2">
-                           <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + country.iso2" style="width: 18px" />
-                           <div>{{ country?.name }}</div>
-                        </div>
-                     </ng-template> -->
-                     <ng-template let-country #item>
-                        <div class="flex items-center gap-2">
-                           <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + country.iso2" style="width: 18px" />
-                           <div>{{ country.name }}</div>
-                        </div>
-                     </ng-template>
-                  </p-autocomplete>
-                  <p-autocomplete
-                     [placeholder]="'Enter ZipCode'"
-                     [formControl]="selectedAddress"
-                     [suggestions]="filteredAddresses"
-                     (completeMethod)="filterAddress($event)"
-                     optionLabel="name"
-                  >
-                     <ng-template let-address #item>
-                        <div class="flex items-center gap-2">
-                           <div>{{ address }}</div>
-                        </div>
-                     </ng-template>
-                  </p-autocomplete>
-               </div>
+               <label for="country" class="block text-xs font-semibold mb-2">Postal Code</label>
+               <p-autocomplete
+                  class="w-full grid" 
+                  [formControl]="selectedAddress"
+                  [suggestions]="filteredAddresses"
+                  (completeMethod)="filterAddress($event)"
+                  optionLabel="name"
+               >
+                  <ng-template let-address #item>
+                     <div class="flex items-center gap-2">
+                        <div>{{ address }}</div>
+                     </div>
+                  </ng-template>
+               </p-autocomplete>
+               @if(!selectedAddress.pristine && selectedAddress.invalid) {
+                  <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please enter a valid postal code</p>
+               }
+            </div>
+            <div class="flex-1">
+               <input type="tel" hidden pInputText />
             </div>
          </div>
          <div class="flex-auto mb-3">

@@ -21,6 +21,7 @@
     "@primeng/themes": "^19.0.5",
     "intl-tel-input": "^24.8.2",
     "ngx-phone-field": "^3.0.1",
+    "postcode-validator": "^3.10.2",
     "primeng": "^19.0.5",
     "rxjs": "~7.8.0",
     "tailwindcss-primeui": "^0.4.0",
