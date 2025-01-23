@@ -41,6 +41,7 @@ export class FormComponent {
     // load utils script for formatting and validation
     loadUtilsOnInit: async () => import('intl-tel-input/utils'), 
   };
+  postalCode: string = "";
   phone: FormControl = new FormControl<Iti | string>("", [Validators.required]);
   selectedCountry: FormControl = new FormControl("", Validators.required);
   selectedAddress: FormControl = new FormControl("", [this.validate()]);
@@ -62,6 +63,7 @@ export class FormComponent {
         if(data.results[this.selectedAddress.value]) {
         for (let i = 0; i < addresses.length; i++) {
             let address = addresses[i];
+            this.postalCode = address.postal_code;
             filtered.push(address.postal_code + ' - ' + address.city_en + ', ' + address.state_code + ', ' + address.country_code);
           }
         }
@@ -71,6 +73,8 @@ export class FormComponent {
       error: ((error) =>{
         console.log("error", error)
       })});
+    } else {
+      this.postalCode = "";
     }
   }
 
@@ -80,8 +84,8 @@ export class FormComponent {
       const country = this.phone?.value?.['defaultCountry'] ? this.phone?.value?.['defaultCountry'].toUpperCase() : null;
       if (!country) return { isInvalidAddress: true };
       const address = this.selectedAddress?.value
-      if (!address) { isInvalidAddress: true };
-      return !postcodeValidator(control?.value, country) ? {isInvalidAddress: true} : null;
+      if (!address) return { isInvalidAddress: true };
+      return !postcodeValidator(this.postalCode || control?.value, country) ? {isInvalidAddress: true} : null;
     }
   }
 
