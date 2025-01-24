@@ -12,7 +12,6 @@ import { SelectModule } from 'primeng/select';
 import { HttpClient } from '@angular/common/http';
 import { postcodeValidator } from 'postcode-validator';
 
-
 @Component({
   selector: 'app-form',
   imports: [
@@ -29,35 +28,44 @@ import { postcodeValidator } from 'postcode-validator';
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
-export class FormComponent {
+export class FormComponent implements OnInit {
   countries = intlTelInput.getCountryData();
   filteredAddresses: any[] = [];
   params = {
     initialCountry: 'us',
     countryOrder: ["us","gb","in"],
     allowDropdown: true,
-    formatAsYouType: true,
+    formatAsYouType: false,
+    // strictMode: true,
+    // isValidNumber: true,
+    // validationNumberType: "Mobile",
+    // showFlags:false,
+    // separateDialCode:true,
+    // formatOnDisplay:false,
+    // nationalMode: false,
     // @ts-ignore
     // load utils script for formatting and validation
     loadUtilsOnInit: async () => import('intl-tel-input/utils'), 
   };
   postalCode: string = "";
-  phone: FormControl = new FormControl<Iti | string>("", [Validators.required]);
+  phone: FormControl = new FormControl<Iti | string>("", [Validators.required,this.validateNumber()]);
   selectedCountry: FormControl = new FormControl("", Validators.required);
   selectedAddress: FormControl = new FormControl("", [this.validate()]);
 
   constructor(private http: HttpClient) {}
 
+  ngOnInit(): void {
+    // this.validateNumber()
+  }
+
   filterAddress(event: AutoCompleteCompleteEvent) {
     const country = this.phone.value['defaultCountry'];
     if (this.selectedAddress.valid && country) {
-      console.log("country", country);
       const postalCode = this.selectedAddress.value;
       const url = `https://app.zipcodebase.com/landing_demo/?codes=${postalCode}&country=${country}`;
       const responseData = this.http.get(url);
       responseData.subscribe({
         next: ((data: any)=> {
-      console.log("data", data);
         let filtered: any[] = [];
         const addresses = data.results[this.selectedAddress.value];
         if(data.results[this.selectedAddress.value]) {
@@ -67,7 +75,6 @@ export class FormComponent {
             filtered.push(address.postal_code + ' - ' + address.city_en + ', ' + address.state_code + ', ' + address.country_code);
           }
         }
-        console.log("filteredAddresses", filtered);
         this.filteredAddresses = filtered;
       }),
       error: ((error) =>{
@@ -76,6 +83,19 @@ export class FormComponent {
     } else {
       this.postalCode = "";
     }
+  }
+
+  validateNumber(): ValidatorFn {
+    return (control:AbstractControl) : ValidationErrors | null => {
+      if (!control) return null;
+      const iti: any  = intlTelInput.utils;
+      const telInput: any = control?.value;
+      if(telInput) {
+        const number = telInput.getNumber(iti?.numberFormat.E164);
+        const isValidNumber = iti.isValidNumber(number, telInput?.defaultCountry)
+        return !isValidNumber ? {isInvalidNumber: true} : null;   
+      } else return null
+    }             
   }
 
   private validate(): ValidatorFn {
@@ -90,3 +110,4 @@ export class FormComponent {
   }
 
 }
+
