@@ -28,7 +28,7 @@ import { postcodeValidator } from 'postcode-validator';
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
-export class FormComponent implements OnInit {
+export class FormComponent {
   countries = intlTelInput.getCountryData();
   filteredAddresses: any[] = [];
   params = {
@@ -36,7 +36,7 @@ export class FormComponent implements OnInit {
     countryOrder: ["us","gb","in"],
     allowDropdown: true,
     formatAsYouType: false,
-    // strictMode: true,
+    strictMode: true,
     // isValidNumber: true,
     // validationNumberType: "Mobile",
     // showFlags:false,
@@ -53,10 +53,6 @@ export class FormComponent implements OnInit {
   selectedAddress: FormControl = new FormControl("", [this.validate()]);
 
   constructor(private http: HttpClient) {}
-
-  ngOnInit(): void {
-    // this.validateNumber()
-  }
 
   filterAddress(event: AutoCompleteCompleteEvent) {
     const country = this.phone.value['defaultCountry'];
