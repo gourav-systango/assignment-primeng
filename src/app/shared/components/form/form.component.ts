@@ -35,7 +35,7 @@ export class FormComponent {
     initialCountry: 'us',
     countryOrder: ["us","gb","in"],
     allowDropdown: true,
-    formatAsYouType: false,
+    formatAsYouType: true,
     strictMode: true,
     // isValidNumber: true,
     // validationNumberType: "Mobile",
@@ -55,6 +55,12 @@ export class FormComponent {
   constructor(private http: HttpClient) {}
 
   filterAddress(event: AutoCompleteCompleteEvent) {
+    /* 
+      const iti: any  = intlTelInput.utils;
+      const number = telInput.getNumber(iti?.numberFormat.E164); // returns tel input value in simple number format with dial code
+      iti.formatNumber(number, telInput?.defaultCountry) // returns tel input value with dial code
+      iti.formatNumberAsYouType(number, telInput?.defaultCountry) // returns tel input value as iso formatd with dial code
+    */
     const country = this.phone.value['defaultCountry'];
     if (this.selectedAddress.valid && country) {
       const postalCode = this.selectedAddress.value;
@@ -84,9 +90,9 @@ export class FormComponent {
   validateNumber(): ValidatorFn {
     return (control:AbstractControl) : ValidationErrors | null => {
       if (!control) return null;
-      const iti: any  = intlTelInput.utils;
       const telInput: any = control?.value;
       if(telInput) {
+        const iti: any  = intlTelInput.utils;
         const number = telInput.getNumber(iti?.numberFormat.E164);
         const isValidNumber = iti.isValidNumber(number, telInput?.defaultCountry)
         return !isValidNumber ? {isInvalidNumber: true} : null;   
