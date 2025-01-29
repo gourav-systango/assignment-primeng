@@ -25,7 +25,7 @@
                   ngxPhoneField
                   [ngxPhoneFieldParams]="params"
                   validationNumberType="true"
-                  id="Contact" class="w-full"
+                  id="phone" class="w-full"
                />
                @if(!phone.pristine && phone.invalid) {
                   <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please enter a valid number</p>
@@ -97,7 +97,7 @@
             text-sm text-gray-base mr-3 py-5 px-4 border border-gray-300 rounded" rows="4"></textarea>
          </div>
          <div class="flex-auto">
-            <p-button label="Submit" [disabled]="true" class="text-xs font-medium text-center" />
+            <p-button label="Submit" (click)="onSubmit()" [disabled]="!phone.pristine && phone.invalid" class="text-xs font-medium text-center" />
          </div>
       </div>
    </div>
