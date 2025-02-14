@@ -244,3 +244,9 @@ img.flag{width:30px}
 .flag-zm{background-position:0 99.173554%}
 .flag-zr{background-position:0 99.586777%}
 .flag-zw{background-position:0 100%}
+
+::ng-deep .auto-loading {
+    .p-autocomplete-loader {
+        display: none;
+    }
+}

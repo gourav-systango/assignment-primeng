@@ -9,7 +9,7 @@ import { NgxPhoneField } from 'ngx-phone-field';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { postcodeValidator } from 'postcode-validator';
 
 @Component({
@@ -31,7 +31,7 @@ import { postcodeValidator } from 'postcode-validator';
 export class FormComponent implements AfterViewInit {
   // @viewChild("Contact") contact
   public countries = intlTelInput.getCountryData();
-  public filteredAddresses: any[] = [];
+  public filteredAddresses: string[] = [];
   public params = {
     initialCountry: 'us',
     countryOrder: ["us","gb","in"],
@@ -53,30 +53,46 @@ export class FormComponent implements AfterViewInit {
   public selectedCountry: FormControl = new FormControl("", Validators.required);
   public selectedAddress: FormControl = new FormControl("", [this.validate()]);
 
+  public testHidden = true;
+
   constructor(private http: HttpClient) {}
 
   public ngAfterViewInit(): void {
-    const input: any = document.querySelector("#phone");
-    setTimeout(() => {
-      const telInstance = intlTelInput.getInstance(input); // get input Instance  
-      telInstance?.setCountry("in") // set country
-      telInstance?.setNumber("+919826098260") // set number
-    }, 1000);
+    this.setInputValue();
+  }
 
-    input.addEventListener("countrychange", () => { // event receive on country change
-      if(this.phone.value['defaultCountry']) {
-        const telInstance = intlTelInput.getInstance(input);
-        telInstance?.setNumber("") // set input value in null on every event if country change
-      }
-    });
+  setInputValue() {
+    this.phone.setValue("");
+    if(this.testHidden) {
+      setTimeout(() => {
+        const input: any = document.querySelector("#phone");
+        const telInstance = intlTelInput.getInstance(input); // get input Instance  
+        telInstance?.setCountry("in") // set country
+        telInstance?.setNumber("+919826098260") // set number
+
+        input.addEventListener("countrychange", () => { // event receive on country change
+          if(this.phone.value['defaultCountry']) {
+            const telInstance = intlTelInput.getInstance(input);
+            telInstance?.setNumber("") // set input value in null on every event if country change
+          }
+        });
+      }, 500);
+    }
+      
   }
 
   public filterAddress(event: AutoCompleteCompleteEvent): void {
+    const apiKey = "fd384f40-e31c-11ef-b04a-455a9eac6a12"
     const country = this.phone.value['defaultCountry'];
+    console.log("filteredAddresses", this.filteredAddresses)
     if (this.selectedAddress.valid && country) {
       const postalCode = this.selectedAddress.value;
-      const url = `https://app.zipcodebase.com/landing_demo/?codes=${postalCode}&country=${country}`;
-      const responseData = this.http.get(url);
+      const token = 'your-jwt-token';
+      const headers = new HttpHeaders({
+        // 'Authorization': `Bearer ${token}`
+      });
+      const url = `https://app.zipcodebase.com/api/v1/search?codes=${postalCode}&country=${country}&apikey=${apiKey}`;
+      const responseData = this.http.get(url, { headers });
       responseData.subscribe({
         next: ((data: any)=> {
         let filtered: any[] = [];
@@ -95,6 +111,7 @@ export class FormComponent implements AfterViewInit {
       })});
     } else {
       this.postalCode = "";
+      this.filteredAddresses = [];
     }
   }
 
@@ -107,7 +124,7 @@ export class FormComponent implements AfterViewInit {
     iti.formatNumberAsYouType(number, telInput?.defaultCountry) // returns tel input value as iso formatd with dial code
     
     const telInputObject = {
-      selectedCountryData: telInput.selectedCountryData,
+      selectedCountryData: telInput.selectedCountryData, //returns selected country data
       // dialCode: telInput.getExtension(),
       number: telInput.getNumber(iti?.numberFormat.E164),
       formatNumber: iti.formatNumber(number, telInput?.defaultCountry),

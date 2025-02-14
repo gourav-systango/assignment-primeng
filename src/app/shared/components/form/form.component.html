@@ -17,20 +17,23 @@
                <label for="email" class="block text-xs font-semibold mb-2">Email</label>
                <input type="email" pInputText id="email" class="w-full" />
             </div>
-            <div class="flex-1">
-               <label for="Contact" class="block text-xs font-semibold mb-2">Contact</label>
-               <input type="tel"
+            @if(testHidden) {
+               <div class="flex-1">
+                  <label for="Contact" class="block text-xs font-semibold mb-2">Contact</label>
+                  <input type="tel"
                   [formControl]="phone"
-                  pInputText
-                  ngxPhoneField
-                  [ngxPhoneFieldParams]="params"
-                  validationNumberType="true"
-                  id="phone" class="w-full"
-               />
-               @if(!phone.pristine && phone.invalid) {
-                  <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please enter a valid number</p>
-               }
-            </div>
+                     pInputText
+                     ngxPhoneField
+                     [ngxPhoneFieldParams]="params"
+                     validationNumberType="true"
+                     id="phone" class="w-full"
+                     />
+                     
+                     @if(!phone.pristine && phone.invalid) {
+                        <p class="text-red-400 mt-1 font-medium text-xs mb-none">Please enter a valid number</p>
+                     }
+                  </div>
+            }
          </div>
          <div class="flex flex-col sm:flex-row sm:items-center gap-6  mb-3">
             <div class="flex-1">
@@ -69,13 +72,17 @@
 
          <div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-3">
             <div class="flex-1">
-               <label for="country" class="block text-xs font-semibold mb-2">Postal Code</label>
+               <label for="country" class="block text-xs font-semibold mb-2">Postal Code
+                  {{phone.value && phone.value['selectedCountryData'] ? phone.value['selectedCountryData'].name : ""}}</label>
                <p-autocomplete
-                  class="w-full grid" 
+                  class="w-100 grid" 
                   [formControl]="selectedAddress"
                   [suggestions]="filteredAddresses"
                   (completeMethod)="filterAddress($event)"
                   optionLabel="name"
+                  [showClear]="true"
+                  [lazy]="true"
+                  [delay]="500"
                >
                   <ng-template let-address #item>
                      <div class="flex items-center gap-2">
@@ -88,7 +95,36 @@
                }
             </div>
             <div class="flex-1">
-               <input type="tel" hidden pInputText />
+               <label for="country" class="block text-xs font-semibold mb-2">TEST
+                  {{phone.value && phone.value['selectedCountryData'] ? phone.value['selectedCountryData'].name : ""}}</label>
+               <p-autocomplete
+                  class="w-100 grid" 
+                  [formControl]="selectedAddress"
+                  [suggestions]="filteredAddresses"
+                  (completeMethod)="filterAddress($event)"
+                  optionLabel="name"
+                  [showClear]="true"
+                  [lazy]="true"
+                  [delay]="500"
+               >
+                  <ng-template let-address #item>
+                     <div class="mr-4 grid place-items-center">
+                        <img
+                          alt="candice"
+                          src="https://docs.material-tailwind.com/img/face-1.jpg"
+                          class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center"
+                        />
+                      </div>
+                      <div>
+                        <h6 class="text-slate-800 font-medium">
+                          Tania Andrew
+                        </h6>
+                        <p class="text-slate-500 text-sm">
+                          {{address}}
+                        </p>
+                      </div>
+                  </ng-template>
+               </p-autocomplete>
             </div>
          </div>
          <div class="flex-auto mb-3">
@@ -98,6 +134,7 @@
          </div>
          <div class="flex-auto">
             <p-button label="Submit" (click)="onSubmit()" [disabled]="!phone.pristine && phone.invalid" class="text-xs font-medium text-center" />
+            <p-button (click)="testHidden = !testHidden; setInputValue()" class="text-xs ml-2 font-medium text-center">Hide Contact Input</p-button>
          </div>
       </div>
    </div>
