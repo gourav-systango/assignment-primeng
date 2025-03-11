@@ -4,9 +4,39 @@
   <p-button label="Check" />
 </div>
 
-<p-toggleswitch [(ngModel)]="checked1"/>
-<p-toggleswitch [(ngModel)]="checked2" [dt]="amberSwitch"/> -->
+-->
+<!-- <p-toggleswitch [(ngModel)]="checked1"/> -->
+<!-- <div class="card flex">
+  DEFAULT UPLOADER: 
+  <p-toggleswitch [(ngModel)]="checked" (change)="eventHandler(checked)" [dt]="amberSwitch"/> 
+</div> -->
+<form [formGroup]="form">
+  <app-p-file-upload
+    [acceptFile]="'image/*'"
+    [selectedRatio]="4/3"
+    [aspectRatios]="[
+      { label: '1:1', value: 1 / 1 },
+      { label: '16:9', value: 16 / 9 },
+      { label: '4:3', value: 4 / 3 }
+    ]"
+    [supportedFormats]="[
+      { label: 'PNG', value: 'png' },
+      { label: 'JPEG', value: 'jpeg' },
+      { label: 'WEBP', value: 'webp' }
+    ]"
+    [customUpload]="false"
+    [freeTransform]="false"
+    [selectedFormat]="'jpeg'"
+    [maxFileSize]="10000000"
+    [multipleUpload]="false"
+    formControlName="imageFile"
+    (onFileUpload)="getImage($event)"
+  ></app-p-file-upload>
+</form>
+
+<!-- <p-button label="Get File" (click)="getFile()"/> -->
+<router-outlet />
+
 
 <!-- <app-intl-tel-input></app-intl-tel-input> -->
 <!-- <app-intl-input></app-intl-input> -->
-<router-outlet />

@@ -1,30 +1,39 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { IntlTelInputComponent } from './shared/components/intl-tel-input/intl-tel-input.component';
 import { IntlInputComponent } from './shared/components/intl-input/intl-input.component';
+import { PFileUploadComponent } from './shared/components/p-file-upload/p-file-upload.component';
 
 @Component({
   selector: 'app-root',
   imports: [
     ButtonModule,
     FormsModule,
+    ReactiveFormsModule,
     // IntlTelInputComponent,
     // IntlInputComponent,
     RouterOutlet,
     // ToggleSwitch,
+    PFileUploadComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  checked1: boolean = true;
+  checked: boolean = true;
 
   checked2: boolean = true;
+  router = inject(Router);
 
-  /* amberSwitch = {
+  fb= inject(FormBuilder);
+  form = this.fb.group({
+    imageFile: [null]
+  });
+  
+  amberSwitch = {
     handle: {
       borderRadius: '4px'
     },
@@ -52,5 +61,14 @@ export class AppComponent {
         }
       }
     }
-  }; */
+  };
+
+  eventHandler(checked: boolean) {
+    console.log("checked-------", checked)
+    this.router.navigateByUrl(checked ? "file-upload" : "manual-file-upload")      
+  }
+
+  getImage(event: any) {
+    console.log("File Uploaded", event)
+  }
 }
