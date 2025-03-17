@@ -11,7 +11,9 @@
   <p-toggleswitch [(ngModel)]="checked" (change)="eventHandler(checked)" [dt]="amberSwitch"/> 
 </div> -->
 <form [formGroup]="form">
+  <!-- [name]="myfile[]" -->
   <app-p-file-upload
+    [uploadUrl]="'https://www.primefaces.org/cdn/api/upload.php'"
     [acceptFile]="'image/*'"
     [selectedRatio]="4/3"
     [aspectRatios]="[
@@ -27,10 +29,13 @@
     [customUpload]="false"
     [freeTransform]="false"
     [selectedFormat]="'jpeg'"
-    [maxFileSize]="10000000"
+    [maxFileSize]="10 * 1024 * 1024"
     [multipleUpload]="false"
     formControlName="imageFile"
-    (onFileUpload)="getImage($event)"
+    (onFileUpload)="getFile($event)"
+    (onFileError)="getError($event)"
+    [isDisabled]="false"
+    [method]="'post'"
   ></app-p-file-upload>
 </form>
 

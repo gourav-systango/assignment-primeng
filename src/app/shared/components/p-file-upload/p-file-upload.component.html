@@ -1,15 +1,19 @@
 <div class="card">
   <p-toast />
   <p-fileupload
+    #fileUploader
     name="myfile[]"
-    url="https://www.primefaces.org/cdn/api/upload.php"
-    [multiple]="false"
+    [url]="uploadUrl"
+    [multiple]="multipleUpload"
     [accept]="acceptFile"
     [customUpload]="false"
     [maxFileSize]="maxFileSize"
+    [disabled]="isDisabled"
+    [method]="method"
     (onUpload)="onTemplatedUpload($event)"
     (onSelect)="onSelect($event)"
-    (onError)="onError($event)"
+    (onBeforeUpload)="onBeforeUpload($event)"
+    (onError)="onError($event)" 
   >
     <ng-template #header let-files
       let-chooseCallback="chooseCallback"
@@ -23,6 +27,7 @@
             icon="pi pi-images"
             [rounded]="true"
             [outlined]="true"
+            [disabled]="isDisabled"
           />
           <p-button
             (click)="uploadEvent(uploadCallback)"
@@ -63,7 +68,6 @@
             <div *ngFor="let file of files; index as i"
               class="p-4 flex items-center justify-between border border-surface rounded-lg">
               
-              <!-- Image Preview -->
               <div class="flex items-center gap-4">
                 <img role="presentation"
                   [alt]="file.name"
@@ -78,10 +82,9 @@
                 </div>
               </div>
           
-              <!-- Action Buttons -->
               <div class="flex gap-2">
                 <label class="text-sm text-gray-500 mt-2">Set Profile:</label>
-                <p-toggleswitch class="mt-2" (click)="isCropEnabled = !isCropEnabled" [dt]="amberSwitch"/> 
+                <p-toggleswitch class="mt-2" (click)="isCropEnabled = !isCropEnabled; freeTransform = false" [dt]="amberSwitch"/> 
                 <p-badge value="Pending" class="mt-2 mr-4" severity="warn" />
                 <p-button icon="pi pi-download"
                   (click)="downloadImage(file)"
@@ -98,15 +101,12 @@
               </div>
             </div>
           </div>
-          
         </div>
         <div *ngIf="uploadedFiles?.length > 0">
           <h5>Completed</h5>
           <div class="flex flex-col gap-4">
             <div *ngFor="let file of uploadedFiles; index as i"
               class="p-4 flex items-center justify-between border border-surface rounded-lg">
-              
-              <!-- Image Preview -->
               <div class="flex items-center gap-4">
                 <img role="presentation"
                   [alt]="file.name"
@@ -121,10 +121,9 @@
                 </div>
               </div>
           
-              <!-- Action Buttons -->
               <div class="flex gap-2">
                 <label class="text-sm text-gray-500 mt-2">Set Profile:</label>
-                <p-toggleswitch class="mt-2" (click)="isCropEnabled = !isCropEnabled" [dt]="amberSwitch"/> 
+                <p-toggleswitch class="mt-2" (click)="isCropEnabled = !isCropEnabled; freeTransform = false" [dt]="amberSwitch"/> 
                 <p-badge value="Completed" class="mt-2 mr-4" severity="success" />
                 <p-button icon="pi pi-download"
                   (click)="downloadImage(file)"
@@ -147,8 +146,8 @@
     <ng-template #file></ng-template>
     <ng-template #empty>
       <div class="flex items-center justify-center flex-col">
-        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
-        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl" [class]="isDisabled ? 'text-muted-color' : '!text-muted-color' " ></i>
+        <p class="mt-6 mb-0" [class]="isDisabled ? 'text-muted-color' : '!text-muted-color' ">Drag and drop files to here to upload.</p>
       </div>
     </ng-template>
   </p-fileupload>
@@ -162,9 +161,6 @@
     [aspectRatio]="selectedRatio"
     [format]="selectedFormat"
     (imageCropped)="imageCropped($event)"
-    (imageLoaded)="imageLoaded($event)"
-    (cropperReady)="cropperReady()"
-    (loadImageFailed)="loadImageFailed()"
   ></image-cropper>
 
   <div *ngIf="croppedImage">

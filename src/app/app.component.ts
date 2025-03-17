@@ -64,11 +64,13 @@ export class AppComponent {
   };
 
   eventHandler(checked: boolean) {
-    console.log("checked-------", checked)
     this.router.navigateByUrl(checked ? "file-upload" : "manual-file-upload")      
   }
 
-  getImage(event: any) {
+  getFile(event: any) {
     console.log("File Uploaded", event)
+  }
+  getError(event: any) {
+    console.log("Uploaded Error", event)
   }
 }

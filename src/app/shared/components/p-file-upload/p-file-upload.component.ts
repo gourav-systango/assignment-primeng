@@ -1,5 +1,5 @@
 import { Component, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core'; import { MessageService } from 'primeng/api';
-import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
+import { FileSelectEvent, FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { PrimeNG } from 'primeng/config';
 import { ButtonModule } from 'primeng/button'; 
 import { CommonModule } from '@angular/common';
@@ -14,7 +14,7 @@ import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALUE_ACCESSOR } fro
   selector: 'app-p-file-upload',
   imports: [
     FormsModule,
-    FileUpload,
+    FileUploadModule,
     ButtonModule,
     BadgeModule,
     ToastModule,
@@ -34,10 +34,14 @@ import { ControlValueAccessor, FormBuilder, FormsModule, NG_VALUE_ACCESSOR } fro
     }
   ]
 })
-export class PFileUploadComponent implements ControlValueAccessor{
+export class PFileUploadComponent implements ControlValueAccessor {
+  @ViewChild('fileUploader') fileUploader!: FileUpload;
 
+  @Input() name?: string = "";
+  @Input() method?: "post" | "put" | undefined = "post";
+  @Input() uploadUrl?: string = "";
   @Input() acceptFile?: string = "";
-  @Input() selectedRatio?: number = 4/3;
+  @Input() selectedRatio?: number = 0;
   @Input() aspectRatios?: {[key: string]: string | number}[] = [
     { label: '1:1', value: 1 / 1 },
     { label: '16:9', value: 16 / 9 },
@@ -48,9 +52,10 @@ export class PFileUploadComponent implements ControlValueAccessor{
     { label: 'JPEG', value: 'jpeg' },
     { label: 'WEBP', value: 'webp' }
   ];
+  @Input() isDisabled?: boolean = false;
   @Input() customUpload?: boolean = false;
   @Input() freeTransform?: boolean = false;
-  @Input() selectedFormat?: OutputFormat | undefined = "jpeg";
+  @Input() selectedFormat?: OutputFormat | undefined = undefined;
   @Input() maxFileSize?: number = 0;
   @Input() multipleUpload?: boolean = false;
 
@@ -132,6 +137,7 @@ export class PFileUploadComponent implements ControlValueAccessor{
   }
 
   onTemplatedUpload(event: any) {
+    console.log("on upload", event)
     this.imageFile = event.files[0];
     for(let file of event.files) {
       this.uploadedFiles.push(file);
@@ -155,13 +161,32 @@ export class PFileUploadComponent implements ControlValueAccessor{
     document.body.removeChild(link);
   }
 
-  onSelect(e: FileSelectEvent) {
-    this.imageFile = e.files[0];
+  onSelect(event: FileSelectEvent) {
+    this.isCropEnabled = false;
+    this.freeTransform = false;
+    this.imageFile = event.files[0];
+    this.handleFileEvent();
   }
 
-  onError(event: any) {
-    console.log("event", event)
-    this.onFileError.emit(event);
+  handleFileEvent() {
+    if(this.fileUploader.msgs) {
+      this.onFileError.emit(this.fileUploader.msgs);
+    }
+    this.onFileUpload.emit({
+      files: this.imageFile || null,
+      objectUrl: "",
+      uploadedFiles: []
+    });
+  }
+
+  onBeforeSend(event: any) {
+    console.log("onBeforeSend", event)
+  }
+  onError(event:any) {
+    console.log("onError", event)
+  }
+  onBeforeUpload(event: any) {
+    console.log("event before upload ", event)
   }
 
   formatSize(bytes: any) {
@@ -183,12 +208,6 @@ export class PFileUploadComponent implements ControlValueAccessor{
     this.onFileUpload.emit({files: this.imageFile, objectUrl: this.croppedImage, uploadedFiles: this.uploadedFiles});
   }
 
-  imageLoaded(e: LoadedImage) {}
-  cropperReady() {}
-  loadImageFailed() {
-    console.log("calling-----")
-  }
-
   changeAspectRatio(ratio: number) {
     this.selectedRatio = ratio;
   }
@@ -200,5 +219,4 @@ export class PFileUploadComponent implements ControlValueAccessor{
   changeFormat(format: OutputFormat | undefined) {
     this.selectedFormat = format;
   }
-
 }
